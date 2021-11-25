@@ -28,10 +28,13 @@ var chart = new CanvasJS.Chart("chartContainer", {
 			type: "scatter",
 			toolTipContent: "<b>X: </b>{x}<br/><b>Y: </b>{y}",
 			dataPoints: [],
-			markerSize: 30,
+			markerSize: 50,
 		}
-	]
+	],
+	
+	
 });
+
 
 //-- Event handler for the input tag
 var inputElement = document.getElementById("listOfPointsInput");
@@ -47,6 +50,9 @@ function handleFiles() {
 			renderChart(reader);
 		}
 	}, 1000);
+
+	drawLine(chart);
+
 }
 
 function renderChart(reader) {
@@ -63,4 +69,16 @@ function renderChart(reader) {
 	}
 	chart.options.data[0].dataPoints = dps;
 	chart.render();
+}
+
+function drawLine(chart){
+	var ctx=chart.ctx;
+
+	ctx.beginPath();
+	ctx.strokeStyle = "#000";
+	ctx.lineWidth =2;
+	ctx.moveTo(1,4);
+	ctx.lineTo(2,8);
+	ctx.stroke();
+
 }

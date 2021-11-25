@@ -97,7 +97,7 @@
                     <div class="card-body">
                         <p class="card-text">Here is what we got:</p>
 
-                        <div id="chartContainer" style="height: 600px; width: 600px;"></div>
+                        <div id="chartContainer" style="height: 600px; width: 700px;"></div>
 
 
 
@@ -145,72 +145,13 @@
         </div>
 
         <pre id="output"></pre>
+
+        
     </div>
     <script src="/js/main.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-    <script>
-        var chart = new CanvasJS.Chart("chartContainer", {
-            zoomEnabled: true,
-            zoomType: "xy",
-            title: {
-                text: "Chart from Text File"
-            },
-            axisX: {
-                title: "X",
-                maximum: 10,
-                interval: 1,
-                gridColor: "lightblue",
-                gridThickness: 2
-            },
-            axisY: {
-                title: "Y",
-                maximum: 10,
-                interval: 1,
-                gridColor: "lightblue",
-                gridThickness: 2
-            },
-            data: [
-                {
-                    type: "scatter",
-                    toolTipContent: "<b>X: </b>{x}<br/><b>Y: </b>{y}",
-                    dataPoints: []
-                }
-            ]
-        });
-
-        //-- Event handler for the input tag
-        var inputElement = document.getElementById("listOfPointsInput");
-        inputElement.addEventListener("change", handleFiles, false);
-
-        function handleFiles() {
-            var fileList = this.files;
-            var reader = new FileReader();
-
-            setInterval(function () {
-                reader.readAsText(fileList[0]);
-                reader.onload = function () {
-                    renderChart(reader);
-                }
-            }, 1000);
-        }
-
-        function renderChart(reader) {
-            var strDps = reader.result;
-            var dps = [];
-
-            strDps = strDps.split("\n");
-
-            for (var i = 0; i < strDps.length; i++) {
-                dps.push({
-                    x: parseInt(strDps[i].split(",")[0]),
-                    y: parseInt(strDps[i].split(",")[1])
-                });
-            }
-            chart.options.data[0].dataPoints = dps;
-            chart.render();
-        }
-    </script>
+    <script src="/js/mapper.js"></script>
 
 
 </body>

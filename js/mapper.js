@@ -45,26 +45,48 @@ var inputElement = document.getElementById("listOfPointsInput");
 inputElement.addEventListener("change", readGraphFile, false);
 
 
-// Plotting Graph from File Function 
+// Read Graph File and Plot Nodes
 function readGraphFile() {
 	var fileList = this.files;
 	var reader = new FileReader();
 	reader.readAsText(fileList[0]);
 	reader.onload = function () {
+		//Plot Nodes
 		renderChart(reader);
 	}
 
 }
 
-//Main Render Function
+//Read Adjacency File and Add to Array
+function readMatrixFile(){
+	event.preventDefault();
+	var inputElement = document.getElementById("adjencyMatrixInput");
+	var fileList = inputElement.files;
+	var plainMatrix = new FileReader();
+	plainMatrix.readAsText(fileList[0]);
+	plainMatrix.onload = function () {
+		//Add to Matrix
+		console.log(plainMatrix);
+		renderMatrix(plainMatrix)
+	}
+}
+
+//Adjency Matrix Render Function
+function renderMatrix(plainMatrix) {
+	var matrix = plainMatrix.result;	
+	const mtx = matrix.split("\n").map(e => [...e].map(e => +e))
+	console.log(mtx);
+	runTraverse(mtx);
+}
+
+//Graph Render Function
 function renderChart(reader) {
 	//Plot Main Points (Nodes)
 	var strDps = reader.result;
 	var dps = [];
-
 	//split by new line
 	strDps = strDps.split("\n");
-
+	
 	// push to array to make x,y and letter name
 	for (var i = 0; i < strDps.length; i++) {
 		dps.push({
@@ -74,16 +96,15 @@ function renderChart(reader) {
 			w: i
 		});
 	}
-
-	//console.log(dps);
-
 	//set chart coordinates with array
 	chart.options.data[0].dataPoints = dps;
 	nodes = dps;
 	//draw the points
 	chart.render();
-
 }
+
+
+
 
 //Add Edges
 function addEdge(edge) {
@@ -100,9 +121,9 @@ function addEdge(edge) {
 	];
 
 	//console.log(series1.dataPoints);
-
-	chart.render();
-
+	setTimeout(() => {
+		chart.render();
+	}, 2000);
 }
 
 //DSF Traverse main algorithm
@@ -130,24 +151,10 @@ function DSFTravel(matrix, size, start) {
 
 
 
-function runTraverse() {
+function runTraverse(data) {
 	event.preventDefault();
-
 	//Adjency Matrix from File
-	var data = [
-		[0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
-		[0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0],
-		[0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
-		[0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
-		[1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0],
-		[1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1],
-		[0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-		[0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1],
-		[0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0],
-		[0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-		[0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0],
-		[0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0]
-	],
+
 		traResult = DSFTravel(data, 12, 0);
 
 
@@ -161,10 +168,18 @@ function runTraverse() {
 			{ x: actualArray[nextIndex].x, y: actualArray[nextIndex].y },
 		];
 	});
+
+
+	const timer = ms => new Promise(res => setTimeout(res, ms))
+	async function load() {
+		// We need to wrap the loop into a function to wait 2 seconds to plot next point
 		for (let i = 0; i < edgesArray.length; i++) {
-
 			addEdge(edgesArray[i]);
-
+			await timer(2000);
+	
 		}
+	} load();
+
+
 }
 

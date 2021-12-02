@@ -1,8 +1,5 @@
 // CMPS3252 - Algorithms Project 
 // Elmer R Huitz 2014110553
-
-
-
 //Scatter Chart Constructor
 
 var nodes = [];
@@ -13,14 +10,14 @@ var chart = new CanvasJS.Chart("chartContainer", {
 	},
 	axisX: {
 		title: "X",
-		maximum: 11,
+		maximum: 19,
 		interval: 1,
 		gridColor: "lightblue",
 		gridThickness: 1
 	},
 	axisY: {
 		title: "Y",
-		maximum: 11,
+		maximum: 19,
 		interval: 1,
 		gridColor: "lightblue",
 		gridThickness: 1
@@ -30,13 +27,11 @@ var chart = new CanvasJS.Chart("chartContainer", {
 			type: "scatter",
 			toolTipContent: "{name}</br><b>X: </b>{x}<br/><b>Y: </b>{y}",
 			dataPoints: [],
-			markerSize: 50,
+			markerSize: 30,
 		},
 
 
 	],
-
-
 });
 
 
@@ -66,7 +61,7 @@ function readMatrixFile(){
 	plainMatrix.readAsText(fileList[0]);
 	plainMatrix.onload = function () {
 		//Add to Matrix
-		console.log(plainMatrix);
+		//console.log(plainMatrix);
 		renderMatrix(plainMatrix)
 	}
 }
@@ -75,7 +70,6 @@ function readMatrixFile(){
 function renderMatrix(plainMatrix) {
 	var matrix = plainMatrix.result;	
 	const mtx = matrix.split("\n").map(e => [...e].map(e => +e))
-	console.log(mtx);
 	runTraverse(mtx);
 }
 
@@ -93,7 +87,7 @@ function renderChart(reader) {
 			x: parseInt(strDps[i].split(",")[0]),
 			y: parseInt(strDps[i].split(",")[1]),
 			name: ((i + 10).toString(36).toUpperCase()),
-			w: i
+			w: i,
 		});
 	}
 	//set chart coordinates with array
@@ -120,10 +114,8 @@ function addEdge(edge) {
 		edge[0], edge[1]
 	];
 
-	//console.log(series1.dataPoints);
-	setTimeout(() => {
 		chart.render();
-	}, 2000);
+	
 }
 
 //DSF Traverse main algorithm
@@ -149,8 +141,6 @@ function DSFTravel(matrix, size, start) {
 	return traverse(tree, start);
 }
 
-
-
 function runTraverse(data) {
 	event.preventDefault();
 	//Adjency Matrix from File
@@ -158,9 +148,10 @@ function runTraverse(data) {
 		traResult = DSFTravel(data, 12, 0);
 
 
+
 	//map array of travert result to nodes to get plotting points
 	const mappedArray = traResult.map((item) => nodes.find((node) => node.w === item));
-	//console.log(mappedArray);
+	console.log(mappedArray);
 	const edgesArray = mappedArray.map((currentNode, index, actualArray) => {
 		const nextIndex = index === actualArray.length - 1 ? 0 : index + 1;
 		return [
@@ -168,6 +159,15 @@ function runTraverse(data) {
 			{ x: actualArray[nextIndex].x, y: actualArray[nextIndex].y },
 		];
 	});
+
+	const solutionArray = traResult.map((item) => nodes.find((node) => node.w === item));
+	const path = solutionArray.map((currentNode, index, actualArray) => {
+		const nextIndex = index === actualArray.length - 1 ? 0 : index + 1;
+		return [
+			{ Node: currentNode.name },
+		];
+	});
+	
 
 
 	const timer = ms => new Promise(res => setTimeout(res, ms))
@@ -179,7 +179,8 @@ function runTraverse(data) {
 	
 		}
 	} load();
-
+	
+	console.log(path);
 
 }
 
